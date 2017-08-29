@@ -3,7 +3,7 @@
 Player::Player() {
   decksize = DEFAULT_DECK_SIZE;
   DEBUG_PRINTLN("start deck init");
-  deck = createNewDeck();
+  createNewDeck(deck);
   DEBUG_PRINTLN("deck content: ");
   for (int i = 0; i < decksize; i++) {
     DEBUG_PRINT("index[");

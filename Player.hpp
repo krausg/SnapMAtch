@@ -15,7 +15,7 @@ class Player {
     void addCard(Card* cards);
     
 
-    const Card** deck;
+    const Card* deck[MAX_CARD_POOL_SIZE];
     int decksize;
     bool human;
 };

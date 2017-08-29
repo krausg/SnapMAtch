@@ -38,9 +38,9 @@ void stateGamePrepare() {
   pauseToJoin_sprite.setOnScreenTime(2);
   pauseToJoin_sprite.setOffScreenTime(1);
 
-  //playerOne = Player();
-  //playerTwo = Player();
-  //ai = AI();
+  playerOne = Player();
+  playerTwo = Player();
+  ai = AI();
 
   playerOne.human = true;
   playerTwo.human = false;

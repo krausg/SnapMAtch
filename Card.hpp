@@ -16,7 +16,7 @@ struct Card {
 
 const PROGMEM Card CARDS[] = { Card(1), Card(2), Card(3), Card(4), Card(5), Card(6), Card(7) , Card(8), Card(9), Card(10) } ;
 
-const Card** createNewDeck();
+void createNewDeck(const Card* emptyDeck[]);
 void ptr_swap(const Card *deck[], byte *indFrom, byte *indTo);
 
 #endif
