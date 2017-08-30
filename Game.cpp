@@ -17,7 +17,7 @@ byte cardPoolSize = 0;
 Sprite gameScreen(0, 0 , gameTest_screen);
 Sprite snapBGSprite(0, 0, snapBG_spriteArr);
 Sprite snapTXSprite(0, 0, snapTX_spriteArr);
-BlinkableSprite pauseToJoin_sprite(82, 1, pauseToJoin_sketch);
+BlinkableSprite pauseToJoin_sprite(82, 55, pauseToJoin_sketch);
 
 void stateGameIntro() {
   gameState = STATE_GAME_TITLE;
@@ -68,7 +68,8 @@ void handleGamePlayerInput() {
       playersTurn = PLAYER_TWO;
     }
   } else if (arduboy.justPressed(B_BUTTON)) {
-    //snapping
+    boolean cardMatches = cardPoolSize != 0 && cardPoolSize != 1 && cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
+    proceedSnap(&playerOne, &playerTwo, cardMatches);
   }
 
   if (arduboy.justPressed(DOWN_BUTTON)) {
@@ -85,36 +86,41 @@ void handleAIActions() {
   }
 
 
-  if (cardPoolSize != 0) {
-    boolean cardMatches = cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
-    if (ai.hasSnapped(cardMatches)) {
-      evaluateSnap(cardPool[cardPoolSize - 1], cardPool[cardPoolSize - 2]);
-      snapBGSprite.moveTo(95, 40);
-      snapTXSprite.moveTo(100, 46);
-      snapBGSprite.setVisibleAmount(30);
-      snapTXSprite.setVisibleAmount(30);
-    }
+  boolean cardMatches = cardPoolSize != 0 && cardPoolSize != 1 && cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
+  if (ai.hasSnapped(cardMatches)) {
+    proceedSnap(&playerTwo, &playerOne, cardMatches);
+    snapBGSprite.moveTo(91, 25);
+    snapTXSprite.moveTo(96, 31);
+    snapBGSprite.setVisibleAmount(30);
+    snapTXSprite.setVisibleAmount(30);
   }
+
 
 }
 
-void evaluateSnap(const Card* first, const Card* second) {
+void proceedSnap(Player *snappedPlayer, Player *otherPlayer, boolean cardMatched) {
+  DEBUG_PRINT(" snappedPlayer: ");
+  DEBUG_PRINTLN(snappedPlayer->human)
 
+  Player *playerGetCards = cardMatched ? snappedPlayer : otherPlayer;
+  for (int i = cardPoolSize; i >= 0; i--) {
+    playerGetCards->addCard(cardPool[i]);
+    cardPool[i] = NULL;
+  }
+  cardPoolSize = 0;
 }
 
 void drawGameScreen() {
   SpritesHelper::drawOverwrite(gameScreen);
 
   // check if singleplayer
-  SpritesHelper::drawSelfMasked(pauseToJoin_sprite);
-
-DEBUG_PRINTLN(snapBGSprite.isVisible());
-  SpritesHelper::drawSelfMasked(snapBGSprite);
-  SpritesHelper::drawSelfMasked(snapTXSprite);
+  SpritesHelper::drawOverwrite(pauseToJoin_sprite);
 
   // mostly debug
   tinyfont.setCursor(4, 3);
   tinyfont.print(playerOne.decksize);
+  tinyfont.setCursor(109, 3);
+  tinyfont.print(playerTwo.decksize);
   tinyfont.setCursor(10, 30);
   tinyfont.print(playerOne.getCurrentCard()->id);
   tinyfont.setCursor(95, 30);
@@ -123,6 +129,11 @@ DEBUG_PRINTLN(snapBGSprite.isVisible());
   tinyfont.print(cardPool[cardPoolSize - 1]->id);
   tinyfont.setCursor(65, 30);
   tinyfont.print(cardPool[cardPoolSize - 2]->id);
+
+  SpritesHelper::drawOverwrite(snapBGSprite);
+  SpritesHelper::drawOverwrite(snapTXSprite);
+
   arduboy.display();
+
 }
 

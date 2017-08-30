@@ -35,8 +35,9 @@ const Card* Player::playCard() {
   return c;
 }
 
-void Player::addCard(Card* cards) {
-
+void Player::addCard(Card* card) {
+  deck[decksize] = card;
+  decksize++;
 }
 
 const Card* Player::getCurrentCard() {

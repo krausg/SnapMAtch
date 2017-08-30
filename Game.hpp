@@ -12,7 +12,7 @@ void stateGameInfo();
 void handleGamePlayerInput();
 void handleAIActions();
 void drawGameScreen();
-void evaluateSnap(const Card* first, const Card* second);
+void proceedSnap(Player *snappedPlayer, Player *otherPlayer, boolean cardMatched) ;
 
 
 extern const Card *cardPool[];
