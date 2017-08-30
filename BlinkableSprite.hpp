@@ -15,7 +15,6 @@ class BlinkableSprite : public AnimatedSprite {
     byte offScreenTime;
     byte onScreenTime;
     byte counter;
-    const unsigned char *bitMapCache;
 };
 
 

@@ -3,22 +3,30 @@
 #include <stdint.h>
 
 AI::AI() {
-  playDelay = 0;
-  snapDelay = 0;
+  AI(EASY_AI);
+
+}
+
+AI::AI(byte inDifficulty) {
+  difficulty = inDifficulty;
+  playDelay = 0 * difficulty;
+  snapDelay = 0 * difficulty;
 }
 
 bool AI::hasPlayedCard() {
   return evaluateDelay(playDelay);
 }
 
-bool AI::hasSnapped(const Card *first,const  Card *second) {
-  return evaluateDelay(snapDelay);
+bool AI::hasSnapped(bool cardMatches) {
+  if (difficulty == EASY_AI || cardMatches) {
+    return evaluateDelay(snapDelay);
+  }
 }
 
 
 bool AI::evaluateDelay(uint8_t &delayPointer) {
   if (delayPointer == 0) {
-    delayPointer = random(10, 40);
+    delayPointer = random(1 * difficulty, 2 * difficulty);
     return true;
   }
 

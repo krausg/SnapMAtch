@@ -15,6 +15,8 @@ const Card* cardPool[MAX_CARD_POOL_SIZE];
 byte cardPoolSize = 0;
 
 Sprite gameScreen(0, 0 , gameTest_screen);
+Sprite snapBGSprite(0, 0, snapBG_spriteArr);
+Sprite snapTXSprite(0, 0, snapTX_spriteArr);
 BlinkableSprite pauseToJoin_sprite(82, 1, pauseToJoin_sketch);
 
 void stateGameIntro() {
@@ -37,10 +39,12 @@ void stateGamePrepare() {
 
   pauseToJoin_sprite.setOnScreenTime(2);
   pauseToJoin_sprite.setOffScreenTime(1);
+  snapBGSprite.setVisible(false);
+  snapTXSprite.setVisible(false);
 
   playerOne = Player();
   playerTwo = Player();
-  ai = AI();
+  ai = AI(NORMAL_AI);
 
   playerOne.human = true;
   playerTwo.human = false;
@@ -79,8 +83,14 @@ void handleAIActions() {
     }
   }
 
-  if (ai.hasSnapped(cardPool[cardPoolSize - 1], cardPool[cardPoolSize - 2])) {
+
+  boolean cardMatches = cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
+  if (ai.hasSnapped(cardMatches)) {
     evaluateSnap(cardPool[cardPoolSize - 1], cardPool[cardPoolSize - 2]);
+    snapBGSprite.moveTo(95, 40);
+    snapTXSprite.moveTo(100, 46);
+    snapBGSprite.setVisible(true);
+    snapTXSprite.setVisible(true);
   }
 
 }
@@ -90,15 +100,13 @@ void evaluateSnap(const Card* first, const Card* second) {
 }
 
 void drawGameScreen() {
-  if (arduboy.justPressed(B_BUTTON)) {
-    DEBUG_PRINT("testTwo:");
-    DEBUG_PRINTLN(playerOne.deck[0]->id);
-  }
-
   SpritesHelper::drawOverwrite(gameScreen);
 
   // check if singleplayer
   SpritesHelper::drawSelfMasked(pauseToJoin_sprite);
+
+  SpritesHelper::drawSelfMasked(snapBGSprite);
+  SpritesHelper::drawSelfMasked(snapTXSprite);
 
   // mostly debug
   tinyfont.setCursor(4, 3);

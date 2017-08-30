@@ -10,9 +10,11 @@
 class AI {
   public:
     AI();
+    AI(byte difficulty);
     bool hasPlayedCard();
-    bool hasSnapped(const Card *first,const  Card *second);
+    bool hasSnapped(bool cardMatches);
   private:
+    uint8_t difficulty;
     uint8_t playDelay;
     uint8_t snapDelay;
     bool evaluateDelay(uint8_t &delayPointer);

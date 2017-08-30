@@ -3,9 +3,8 @@
 #include "SpritesHelper.hpp"
 
 
-BlinkableSprite::BlinkableSprite(int8_t inX, int8_t inY, const  unsigned char *inBitMap): AnimatedSprite(inX, inY, NULL) {
+BlinkableSprite::BlinkableSprite(int8_t inX, int8_t inY, const  unsigned char *inBitMap): AnimatedSprite(inX, inY, inBitMap) {
   counter = 0;
-  bitMapCache = inBitMap;
 }
 
 
@@ -22,11 +21,11 @@ void BlinkableSprite::animate() {
   }
 
   if (counter > offScreenTime) {
-    bitmap = bitMapCache;
+    this->setVisible(true);
 
     if (counter > (onScreenTime + offScreenTime) ) {
       counter = 0;
-      bitmap = NULL;
+      this->setVisible(false);
     }
   }
 }

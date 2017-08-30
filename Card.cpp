@@ -9,6 +9,10 @@ Card::Card(byte inId) {
   id = inId;
 }
 
+boolean Card::matches(Card *card){
+  return this->id == card->id;
+}
+
 void createNewDeck(const Card* emptyDeck[]) {
   //    -- To shuffle an array a of n elements (indices 0..n-1):
   //  for i from n−1 downto 1 do
@@ -55,4 +59,6 @@ void ptr_swap(const Card *deck[], byte *indFrom, byte *indTo) {
   deck[*indTo] = cardFrom;
   return;
 }
+
+
 

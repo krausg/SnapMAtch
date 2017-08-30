@@ -8,9 +8,10 @@
 
 
 struct Card {
-  Card();
-  Card(byte id);
-  byte id;
+    byte id;
+    Card();
+    Card(byte id);
+    boolean matches(Card *);
 };
 
 
