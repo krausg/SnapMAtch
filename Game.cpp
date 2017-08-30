@@ -39,8 +39,9 @@ void stateGamePrepare() {
 
   pauseToJoin_sprite.setOnScreenTime(2);
   pauseToJoin_sprite.setOffScreenTime(1);
-  snapBGSprite.setVisibleAmount(-1);
-  snapTXSprite.setVisibleAmount(-1);
+  snapBGSprite.setVisibleAmount(SPRITE_NOT_VISIBLE);
+  snapTXSprite.setVisibleAmount(SPRITE_NOT_VISIBLE);
+  DEBUG_PRINTLN(snapBGSprite.isVisible());
 
   playerOne = Player();
   playerTwo = Player();
@@ -84,13 +85,15 @@ void handleAIActions() {
   }
 
 
-  boolean cardMatches = cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
-  if (ai.hasSnapped(cardMatches)) {
-    evaluateSnap(cardPool[cardPoolSize - 1], cardPool[cardPoolSize - 2]);
-    snapBGSprite.moveTo(95, 40);
-    snapTXSprite.moveTo(100, 46);
-    snapBGSprite.setVisibleAmount(30);
-    snapTXSprite.setVisibleAmount(30);
+  if (cardPoolSize != 0) {
+    boolean cardMatches = cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
+    if (ai.hasSnapped(cardMatches)) {
+      evaluateSnap(cardPool[cardPoolSize - 1], cardPool[cardPoolSize - 2]);
+      snapBGSprite.moveTo(95, 40);
+      snapTXSprite.moveTo(100, 46);
+      snapBGSprite.setVisibleAmount(30);
+      snapTXSprite.setVisibleAmount(30);
+    }
   }
 
 }
@@ -105,6 +108,7 @@ void drawGameScreen() {
   // check if singleplayer
   SpritesHelper::drawSelfMasked(pauseToJoin_sprite);
 
+DEBUG_PRINTLN(snapBGSprite.isVisible());
   SpritesHelper::drawSelfMasked(snapBGSprite);
   SpritesHelper::drawSelfMasked(snapTXSprite);
 

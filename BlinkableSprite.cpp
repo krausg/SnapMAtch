@@ -1,5 +1,6 @@
 #include "BlinkableSprite.hpp"
 
+#include "Global.h"
 #include "SpritesHelper.hpp"
 
 
@@ -21,11 +22,11 @@ void BlinkableSprite::animate() {
   }
 
   if (counter > offScreenTime) {
-    this->setVisibleAmount(-1);
+    this->setVisibleAmount(SPRITE_ALWAYS_VISIBLE);
 
     if (counter > (onScreenTime + offScreenTime) ) {
       counter = 0;
-      this->setVisibleAmount(0);
+      this->setVisibleAmount(SPRITE_NOT_VISIBLE);
     }
   }
 }
