@@ -1,18 +1,28 @@
 #include "Sprite.hpp"
 
-Sprite::Sprite(int8_t inX, int8_t inY, const  unsigned char *inBitMap){
+Sprite::Sprite(int8_t inX, int8_t inY, const  unsigned char *inBitMap) {
   x = inX;
   y = inY;
   bitmap  = inBitMap;
-  isVisible = true;
+  visibleAmount = -1;
 }
 
-void Sprite::moveTo(int8_t moveX, int8_t moveY){
+void Sprite::moveTo(int8_t moveX, int8_t moveY) {
   x = moveX;
   y = moveY;
 }
 
-void Sprite::setVisible(boolean inIsVisible){
-  isVisible = inIsVisible;
+void Sprite::nextFrame() {
+  if (visibleAmount > 0) {
+    visibleAmount-=1;
+  }
+}
+
+void Sprite::setVisibleAmount(int8_t inVisibleAmount) {
+  visibleAmount = inVisibleAmount;
+}
+
+boolean  Sprite::isVisible() {
+  return visibleAmount != 0;
 }
 

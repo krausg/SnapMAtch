@@ -39,8 +39,8 @@ void stateGamePrepare() {
 
   pauseToJoin_sprite.setOnScreenTime(2);
   pauseToJoin_sprite.setOffScreenTime(1);
-  snapBGSprite.setVisible(false);
-  snapTXSprite.setVisible(false);
+  snapBGSprite.setVisibleAmount(-1);
+  snapTXSprite.setVisibleAmount(-1);
 
   playerOne = Player();
   playerTwo = Player();
@@ -89,8 +89,8 @@ void handleAIActions() {
     evaluateSnap(cardPool[cardPoolSize - 1], cardPool[cardPoolSize - 2]);
     snapBGSprite.moveTo(95, 40);
     snapTXSprite.moveTo(100, 46);
-    snapBGSprite.setVisible(true);
-    snapTXSprite.setVisible(true);
+    snapBGSprite.setVisibleAmount(30);
+    snapTXSprite.setVisibleAmount(30);
   }
 
 }

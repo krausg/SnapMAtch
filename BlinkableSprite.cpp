@@ -21,11 +21,11 @@ void BlinkableSprite::animate() {
   }
 
   if (counter > offScreenTime) {
-    this->setVisible(true);
+    this->setVisibleAmount(-1);
 
     if (counter > (onScreenTime + offScreenTime) ) {
       counter = 0;
-      this->setVisible(false);
+      this->setVisibleAmount(0);
     }
   }
 }
