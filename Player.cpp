@@ -1,5 +1,6 @@
 #include "Player.hpp"
 
+
 Player::Player() {
   decksize = DEFAULT_DECK_SIZE;
   DEBUG_PRINTLN("start deck init");
@@ -15,10 +16,15 @@ Player::Player() {
 
 
 const Card* Player::playCard() {
-  DEBUG_PRINTLN(decksize);
-  for (int i = 0; i < DEFAULT_DECK_SIZE; i++) {
+  DEBUG_PRINT(human == 0 ? "cpu " : "human ");
+  DEBUG_PRINT("with decksize: ");
+  DEBUG_PRINT(decksize);
+  DEBUG_PRINT(" and content: (");
+  for (int i = 0; i < decksize; i++) {
 
-    DEBUG_PRINT(",");
+    if (i > 0) {
+      DEBUG_PRINT(",");
+    }
     if ((DEFAULT_DECK_SIZE - decksize) - i == 0) {
       DEBUG_PRINT("[");
     }
@@ -27,7 +33,7 @@ const Card* Player::playCard() {
       DEBUG_PRINT("]");
     }
   }
-  DEBUG_PRINTLN("");
+  DEBUG_PRINTLN(")");
 
   const Card *c = getCurrentCard();
   decksize--;
@@ -41,6 +47,14 @@ void Player::addCard(Card* card) {
 }
 
 const Card* Player::getCurrentCard() {
-  return deck[DEFAULT_DECK_SIZE - decksize];
+  if (arduboy.justPressed(LEFT_BUTTON)) {
+    DEBUG_PRINT("player: ")
+    DEBUG_PRINT(human == 0 ? "cpu " : "human ")
+    DEBUG_PRINT("current card id: ")
+    DEBUG_PRINT(deck[decksize-1]->id)
+    DEBUG_PRINT(" index: ")
+    DEBUG_PRINTLN(decksize - 1);
+  }
+  return deck[decksize - 1];
 }
 
