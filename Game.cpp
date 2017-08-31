@@ -99,11 +99,16 @@ void handleAIActions() {
 }
 
 void proceedSnap(Player *snappedPlayer, Player *otherPlayer, boolean cardMatched) {
-  DEBUG_PRINT(" snappedPlayer: ");
+  DEBUG_PRINT("poolSize: ");
+  DEBUG_PRINT(cardPoolSize)
+  DEBUG_PRINT(" snappedPlayer::")
   DEBUG_PRINTLN(snappedPlayer->human)
+  
 
   Player *playerGetCards = cardMatched ? snappedPlayer : otherPlayer;
-  for (int i = cardPoolSize; i >= 0; i--) {
+  for (int i = cardPoolSize-1; i >= 0; i--) {
+    DEBUG_PRINT("card snapped was:")
+    DEBUG_PRINTLN(cardPool[i]->id)
     playerGetCards->addCard(cardPool[i]);
     cardPool[i] = NULL;
   }
@@ -121,14 +126,22 @@ void drawGameScreen() {
   tinyfont.print(playerOne.decksize);
   tinyfont.setCursor(109, 3);
   tinyfont.print(playerTwo.decksize);
-  tinyfont.setCursor(10, 30);
-  tinyfont.print(playerOne.getCurrentCard()->id);
-  tinyfont.setCursor(95, 30);
-  tinyfont.print(playerTwo.getCurrentCard()->id);
-  tinyfont.setCursor(35, 30);
-  tinyfont.print(cardPool[cardPoolSize - 1]->id);
-  tinyfont.setCursor(65, 30);
-  tinyfont.print(cardPool[cardPoolSize - 2]->id);
+  if (playerOne.decksize > 0) {
+    tinyfont.setCursor(10, 30);
+    tinyfont.print(playerOne.getCurrentCard()->id);
+  }
+  if (playerTwo.decksize > 0) {
+    tinyfont.setCursor(95, 30);
+    tinyfont.print(playerTwo.getCurrentCard()->id);
+  }
+  if (cardPoolSize > 0) {
+    tinyfont.setCursor(35, 30);
+    tinyfont.print(cardPool[cardPoolSize - 1]->id);
+  }
+  if (cardPoolSize > 1) {
+    tinyfont.setCursor(65, 30);
+    tinyfont.print(cardPool[cardPoolSize - 2]->id);
+  }
 
   SpritesHelper::drawOverwrite(snapBGSprite);
   SpritesHelper::drawOverwrite(snapTXSprite);
