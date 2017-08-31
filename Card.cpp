@@ -22,14 +22,19 @@ void createNewDeck(const Card* emptyDeck[]) {
   //const Card* newDeck[DEFAULT_DECK_SIZE];
   DEBUG_PRINTLN("startDeckCreation");
 
-  for (int i = 0; i < DEFAULT_DECK_SIZE; i++) {
+  for (int i = 0; i < MAX_CARD_POOL_SIZE; i++) {
     DEBUG_PRINT("indexOfPtr:");
     DEBUG_PRINT(i);
    // DEBUG_PRINT(" addr: ");
    // DEBUG_PRINT(newDeck[i]);
     DEBUG_PRINT(" oldValue: ");
     DEBUG_PRINT(emptyDeck[i]->id);
-    emptyDeck[i] = &CARDS[i];
+    if(i < DEFAULT_DECK_SIZE){
+      emptyDeck[i] = &CARDS[i];
+    }else{
+       emptyDeck[i] = &INVALID_CARD;
+    }
+    
     DEBUG_PRINT(" newValue: ");
     DEBUG_PRINT(emptyDeck[i]->id);
     DEBUG_PRINT(" valueOfRealCard: ");
