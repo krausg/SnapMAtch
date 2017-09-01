@@ -9,27 +9,32 @@ AI::AI() {
 
 AI::AI(byte inDifficulty) {
   difficulty = inDifficulty;
-  playDelay = 0 * difficulty;
-  snapDelay = 0 * difficulty;
+  playDelay = 1 * difficulty;
+  snapDelay = 1 * difficulty;
 }
 
 bool AI::hasPlayedCard() {
-  return evaluateDelay(playDelay);
+  if (arduboy.justPressed(UP_BUTTON)) {
+    DEBUG_PRINT("play delay: ");
+    DEBUG_PRINTLN(playDelay);
+  }
+  return evaluateDelay(&playDelay);
 }
 
 bool AI::hasSnapped(bool cardMatches) {
   if (difficulty == EASY_AI || cardMatches) {
-    return evaluateDelay(snapDelay);
+    return evaluateDelay(&snapDelay);
   }
 }
 
 
-bool AI::evaluateDelay(uint8_t &delayPointer) {
-  if (delayPointer == 0) {
-    delayPointer = random(1 * difficulty, 2 * difficulty);
+bool AI::evaluateDelay(uint8_t *delayPointer) {
+
+  if (*delayPointer == 0) {
+    *delayPointer = random(1 * difficulty, 5 * difficulty);
     return true;
   }
 
-  delayPointer--;
+  *delayPointer-=1;
   return false;
 }
