@@ -42,7 +42,11 @@ const Card* Player::playCard() {
 }
 
 void Player::addCard(Card* card) {
-  deck[decksize] = card;
+  //  deck[decksize] = card;
+  for (int i = decksize - 1; i >= 0 ; i--) {
+    deck[i + 1] = deck[i];
+  }
+  deck[0] = card;
   decksize++;
 }
 
@@ -51,10 +55,22 @@ const Card* Player::getCurrentCard() {
     DEBUG_PRINT("player: ")
     DEBUG_PRINT(human == 0 ? "cpu " : "human ")
     DEBUG_PRINT("current card id: ")
-    DEBUG_PRINT(deck[decksize-1]->id)
+    DEBUG_PRINT(deck[decksize - 1]->id)
     DEBUG_PRINT(" index: ")
     DEBUG_PRINTLN(decksize - 1);
   }
   return deck[decksize - 1];
+}
+
+boolean Player::hasPressedPlayCard() {
+  return arduboy.justPressed(A_BUTTON);
+}
+
+boolean Player::hasPressedSnapCard() {
+
+}
+
+boolean Player::hasPressedOptions() {
+
 }
 

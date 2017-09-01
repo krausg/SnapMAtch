@@ -10,9 +10,13 @@ class Player {
   public:
     Player();
     const Card * playCard();
+    boolean hasPressedPlayCard();
+    boolean hasPressedSnapCard();
+    boolean hasPressedOptions();
     const Card* getCurrentCard();
     
     void addCard(Card* cards);
+    
     
 
     const Card* deck[MAX_CARD_POOL_SIZE];

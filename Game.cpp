@@ -5,6 +5,9 @@
 #define PLAYER_ONE 1
 #define PLAYER_TWO 2
 
+//define
+#define SINGLEPLAYER false
+
 Player playerOne;
 Player playerTwo;
 AI ai;
@@ -24,13 +27,35 @@ void stateGameIntro() {
 }
 
 void stateGamePlay() {
-  drawGameScreen();
-
-  if (!playerTwo.human) {
-    handleAIActions();
+  // DEBUG
+  if (arduboy.justPressed(UP_BUTTON)) {
+    DEBUG_PRINT("current players turn:");
+    DEBUG_PRINTLN(playersTurn == 1 ? "player_one" : "player_two");
   }
 
-  handleGamePlayerInput();
+
+  boolean gameOver = (playerOne.decksize <= 0 || playerTwo.decksize <= 0) && cardPoolSize == 0;
+  if (!gameOver) {
+    if (!playerTwo.human) {
+      handleAIActions();
+    }
+
+    handleGamePlayerInput();
+  }
+
+  drawGameScreen();
+  if (gameOver) {
+    tinyfont.setCursor(50, 30);
+    tinyfont.print("GAME OVER");
+    //tinyfont.print(( playerOne.decksize > 0 ? "Player 2 won!" : "Player 1 won!"));
+    if (arduboy.justPressed(UP_BUTTON)) {
+      DEBUG_PRINT("cardpoolsize:");
+      DEBUG_PRINTLN(cardPoolSize);
+    }
+  }
+  arduboy.display();
+
+
 }
 
 void stateGamePrepare() {
@@ -45,10 +70,11 @@ void stateGamePrepare() {
 
   playerOne = Player();
   playerTwo = Player();
-  ai = AI(NORMAL_AI);
+  if (SINGLEPLAYER) {
+    ai = AI(NORMAL_AI);
+    playerTwo.human = false;
+  }
 
-  playerOne.human = true;
-  playerTwo.human = false;
   DEBUG_PRINT("playerOne deck index 0 test:");
   DEBUG_PRINTLN(playerOne.deck[0]->id);
   DEBUG_PRINTLN("finish Prepare for Game");
@@ -62,14 +88,24 @@ void stateGameInfo() {
 
 void handleGamePlayerInput() {
   // check single or multiplayer
-  if (arduboy.justPressed(A_BUTTON) && playersTurn == PLAYER_ONE) {
+
+  Player *currentPlayer = playersTurn == PLAYER_ONE ? &playerOne : &playerTwo;
+  if (currentPlayer->hasPressedPlayCard()) {
     if (playerOne.decksize > 0) {
       cardPool[cardPoolSize++] = playerOne.playCard();
       playersTurn = PLAYER_TWO;
     }
+  }else if(currentPlayer->hasPressedSnapCard()){
+
+  //if (arduboy.justPressed(A_BUTTON) && playersTurn == PLAYER_ONE) {
+
   } else if (arduboy.justPressed(B_BUTTON)) {
     boolean cardMatches = cardPoolSize != 0 && cardPoolSize != 1 && cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
     proceedSnap(&playerOne, &playerTwo, cardMatches);
+    snapBGSprite.moveTo(0, 25);
+    snapTXSprite.moveTo(5, 31);
+    snapBGSprite.setVisibleAmount(30);
+    snapTXSprite.setVisibleAmount(30);
   }
 
   if (arduboy.justPressed(DOWN_BUTTON)) {
@@ -87,6 +123,7 @@ void handleAIActions() {
 
 
   boolean cardMatches = cardPoolSize != 0 && cardPoolSize != 1 && cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
+  cardMatches = playerOne.decksize <= 0 || playerTwo.decksize <= 0 ? true : cardMatches;
   if (ai.hasSnapped(cardMatches)) {
     proceedSnap(&playerTwo, &playerOne, cardMatches);
     snapBGSprite.moveTo(91, 25);
@@ -103,10 +140,10 @@ void proceedSnap(Player *snappedPlayer, Player *otherPlayer, boolean cardMatched
   DEBUG_PRINT(cardPoolSize)
   DEBUG_PRINT(" snappedPlayer::")
   DEBUG_PRINTLN(snappedPlayer->human)
-  
+
 
   Player *playerGetCards = cardMatched ? snappedPlayer : otherPlayer;
-  for (int i = cardPoolSize-1; i >= 0; i--) {
+  for (int i = cardPoolSize - 1; i >= 0; i--) {
     DEBUG_PRINT("card snapped was:")
     DEBUG_PRINTLN(cardPool[i]->id)
     playerGetCards->addCard(cardPool[i]);
@@ -118,8 +155,9 @@ void proceedSnap(Player *snappedPlayer, Player *otherPlayer, boolean cardMatched
 void drawGameScreen() {
   SpritesHelper::drawOverwrite(gameScreen);
 
-  // check if singleplayer
-  SpritesHelper::drawOverwrite(pauseToJoin_sprite);
+  if (SINGLEPLAYER) {
+    SpritesHelper::drawOverwrite(pauseToJoin_sprite);
+  }
 
   // mostly debug
   tinyfont.setCursor(4, 3);
@@ -146,7 +184,6 @@ void drawGameScreen() {
   SpritesHelper::drawOverwrite(snapBGSprite);
   SpritesHelper::drawOverwrite(snapTXSprite);
 
-  arduboy.display();
 
 }
 
