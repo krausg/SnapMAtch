@@ -4,9 +4,3 @@ Arduboy2Base arduboy;
 Sprites sprites;
 Tinyfont tinyfont = Tinyfont(arduboy.sBuffer, Arduboy2::width(), Arduboy2::height());
 byte gameState = STATE_GAME_INTRO;
-
-void drawFPSCounter(Arduboy2Base arduboy) {
-  
-  arduboy.display();
-}
-

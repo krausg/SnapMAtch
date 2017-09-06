@@ -14,7 +14,7 @@
 #define DEBUG_PREPARE(x)     Serial.begin(x);
 #define DEBUG_PRINT(x)       Serial.print(x);
 #define DEBUG_PRINTLN(x)     Serial.println(x);
-#define DEBUG_FPS_COUNTER(x) drawFPSCounter(x);
+#define DEBUG_FPS_COUNTER(x) //drawFPSCounter(x);
 #else
 #define DEBUG_PREPARE(x)
 #define DEBUG_PRINT(x)
@@ -41,7 +41,6 @@ extern Tinyfont tinyfont;
 extern Sprites sprites;
 extern byte gameState;
 
-void drawFPSCounter(Arduboy2Base arduboy);
 
 PROGMEM const unsigned char mainTest[] = {
   128, 64,

@@ -1,21 +1,22 @@
 #include "Game.hpp"
 #include "BlinkableSprite.hpp"
+
 #include "AI.hpp"
 
 #define PLAYER_ONE 1
 #define PLAYER_TWO 2
 
-//define
-#define SINGLEPLAYER false
+// change to dynamic var
+#define SINGLEPLAYER true
 
 Player playerOne;
 Player playerTwo;
-AI ai;
-
-byte playersTurn = PLAYER_ONE;
+Player *playersTurn = &playerOne;
 
 const Card* cardPool[MAX_CARD_POOL_SIZE];
 byte cardPoolSize = 0;
+boolean gameOver = false;
+boolean cardMatches = false;
 
 Sprite gameScreen(0, 0 , gameTest_screen);
 Sprite snapBGSprite(0, 0, snapBG_spriteArr);
@@ -27,14 +28,7 @@ void stateGameIntro() {
 }
 
 void stateGamePlay() {
-  // DEBUG
-  if (arduboy.justPressed(UP_BUTTON)) {
-    DEBUG_PRINT("current players turn:");
-    DEBUG_PRINTLN(playersTurn == 1 ? "player_one" : "player_two");
-  }
-
-
-  boolean gameOver = (playerOne.decksize <= 0 || playerTwo.decksize <= 0) && cardPoolSize == 0;
+  gameOver = (playerOne.decksize <= 0 || playerTwo.decksize <= 0) && cardPoolSize == 0;
   if (!gameOver) {
     if (!playerTwo.human) {
       handleAIActions();
@@ -68,11 +62,17 @@ void stateGamePrepare() {
   snapTXSprite.setVisibleAmount(SPRITE_NOT_VISIBLE);
   DEBUG_PRINTLN(snapBGSprite.isVisible());
 
-  playerOne = Player();
-  playerTwo = Player();
+  playerOne = Player(PLAYER_ONE);
   if (SINGLEPLAYER) {
-    ai = AI(NORMAL_AI);
-    playerTwo.human = false;
+    DEBUG_PRINTLN("AI STARTED")
+    playerTwo = AI(NORMAL_AI, PLAYER_TWO);
+    playerOne.setButtonLayout(A_BUTTON, B_BUTTON, DOWN_BUTTON);
+
+  } else {
+    DEBUG_PRINTLN("PLAYER2 STARTED")
+    playerTwo = Player(PLAYER_TWO);
+    playerTwo.setButtonLayout(B_BUTTON,A_BUTTON , NULL);
+    playerOne.setButtonLayout(LEFT_BUTTON,RIGHT_BUTTON,DOWN_BUTTON);
   }
 
   DEBUG_PRINT("playerOne deck index 0 test:");
@@ -87,20 +87,19 @@ void stateGameInfo() {
 
 
 void handleGamePlayerInput() {
-  // check single or multiplayer
-
-  Player *currentPlayer = playersTurn == PLAYER_ONE ? &playerOne : &playerTwo;
-  if (currentPlayer->hasPressedPlayCard()) {
-    if (playerOne.decksize > 0) {
-      cardPool[cardPoolSize++] = playerOne.playCard();
-      playersTurn = PLAYER_TWO;
+  if (playersTurn->hasPressedPlayCard()) {
+    if (playersTurn->decksize > 0) {
+      cardPool[cardPoolSize++] = playersTurn->playCard();
+      if (getNextPlayer()->decksize != 0) {
+        playersTurn = getNextPlayer();
+      }
     }
-  }else if(currentPlayer->hasPressedSnapCard()){
+    DEBUG_PRINT("NEXTPLAYER: ");
+    DEBUG_PRINTLN(playersTurn->playerNum);
+  }
 
-  //if (arduboy.justPressed(A_BUTTON) && playersTurn == PLAYER_ONE) {
-
-  } else if (arduboy.justPressed(B_BUTTON)) {
-    boolean cardMatches = cardPoolSize != 0 && cardPoolSize != 1 && cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
+  boolean cardMatches = cardPoolSize != 0 && cardPoolSize != 1 && cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
+  if (playerOne.hasPressedSnapCard()) {
     proceedSnap(&playerOne, &playerTwo, cardMatches);
     snapBGSprite.moveTo(0, 25);
     snapTXSprite.moveTo(5, 31);
@@ -108,44 +107,52 @@ void handleGamePlayerInput() {
     snapTXSprite.setVisibleAmount(30);
   }
 
-  if (arduboy.justPressed(DOWN_BUTTON)) {
+  /* if (playerTwo.hasPressedSnapCard()) {
+     proceedSnap(&playerTwo, &playerOne, cardMatches);
+     snapBGSprite.moveTo(91, 25);
+     snapTXSprite.moveTo(96, 31);
+     snapBGSprite.setVisibleAmount(30);
+     snapTXSprite.setVisibleAmount(30);
+    }*/
+
+  if (playerOne.hasPressedOptions() || playerTwo.hasPressedOptions()) {
     gameState = STATE_GAME_TITLE;
   }
 }
 
 void handleAIActions() {
-  if (playersTurn == PLAYER_TWO) {
-    if (ai.hasPlayedCard()) {
-      cardPool[cardPoolSize++] = playerTwo.playCard();
-      playersTurn = PLAYER_ONE;
+  /* if (playersTurn->playerNum == PLAYER_TWO) {
+     if (ai.hasPlayedCard()) {
+       cardPool[cardPoolSize++] = playerTwo.playCard();
+       playersTurn = &playerOne;
+     }
     }
-  }
 
 
-  boolean cardMatches = cardPoolSize != 0 && cardPoolSize != 1 && cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
-  cardMatches = playerOne.decksize <= 0 || playerTwo.decksize <= 0 ? true : cardMatches;
-  if (ai.hasSnapped(cardMatches)) {
-    proceedSnap(&playerTwo, &playerOne, cardMatches);
-    snapBGSprite.moveTo(91, 25);
-    snapTXSprite.moveTo(96, 31);
-    snapBGSprite.setVisibleAmount(30);
-    snapTXSprite.setVisibleAmount(30);
-  }
+    boolean cardMatches = cardPoolSize != 0 && cardPoolSize != 1 && cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
+    cardMatches = playerOne.decksize <= 0 || playerTwo.decksize <= 0 ? true : cardMatches;
+    if (ai.hasSnapped(cardMatches)) {
+     proceedSnap(&playerTwo, &playerOne, cardMatches);
+     snapBGSprite.moveTo(91, 25);
+     snapTXSprite.moveTo(96, 31);
+     snapBGSprite.setVisibleAmount(30);
+     snapTXSprite.setVisibleAmount(30);
+    }
 
-
+  */
 }
 
 void proceedSnap(Player *snappedPlayer, Player *otherPlayer, boolean cardMatched) {
-  DEBUG_PRINT("poolSize: ");
+ /* DEBUG_PRINT("poolSize: ");
   DEBUG_PRINT(cardPoolSize)
   DEBUG_PRINT(" snappedPlayer::")
   DEBUG_PRINTLN(snappedPlayer->human)
-
+*/
 
   Player *playerGetCards = cardMatched ? snappedPlayer : otherPlayer;
   for (int i = cardPoolSize - 1; i >= 0; i--) {
-    DEBUG_PRINT("card snapped was:")
-    DEBUG_PRINTLN(cardPool[i]->id)
+   // DEBUG_PRINT("card snapped was:")
+   // DEBUG_PRINTLN(cardPool[i]->id)
     playerGetCards->addCard(cardPool[i]);
     cardPool[i] = NULL;
   }
@@ -185,5 +192,9 @@ void drawGameScreen() {
   SpritesHelper::drawOverwrite(snapTXSprite);
 
 
+}
+
+Player* getNextPlayer() {
+  return playersTurn->playerNum == PLAYER_ONE ? &playerTwo : &playerOne;
 }
 

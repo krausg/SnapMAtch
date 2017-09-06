@@ -23,7 +23,6 @@ void BlinkableSprite::animate() {
 
   if (counter > offScreenTime) {
     this->setVisibleAmount(SPRITE_ALWAYS_VISIBLE);
-
     if (counter > (onScreenTime + offScreenTime) ) {
       counter = 0;
       this->setVisibleAmount(SPRITE_NOT_VISIBLE);

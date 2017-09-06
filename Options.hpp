@@ -4,7 +4,6 @@
 #include "Global.h"
 
 
-
 void stateOptions();
 void drawOptionScreen();
 void handleOptionUserInput();

@@ -13,6 +13,7 @@ const FunctionPointer PROGMEM mainGameLoop[] =
   stateTitleInfo,
   stateGamePrepare,
   stateGamePlay
+  //stateGame
 };
 
 
