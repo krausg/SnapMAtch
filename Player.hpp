@@ -8,20 +8,21 @@
 
 class Player {
   public:
+    Player(byte inPlayerNum);
     Player();
     const Card * playCard();
-    boolean hasPressedPlayCard();
-    boolean hasPressedSnapCard();
-    boolean hasPressedOptions();
+    virtual boolean hasPressedPlayCard();
+    virtual boolean hasPressedSnapCard();
+    virtual boolean hasPressedOptions();
+    void setButtonLayout(byte playButton, byte snapButton, byte optionButton);
     const Card* getCurrentCard();
-    
     void addCard(Card* cards);
-    
-    
-
+    byte playerNum;
     const Card* deck[MAX_CARD_POOL_SIZE];
     int decksize;
     bool human;
+  private:
+    byte playButton, snapButton, optionButton;
 };
 
 #endif
