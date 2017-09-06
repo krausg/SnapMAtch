@@ -13,13 +13,13 @@ void stateGameInfo();
 void handleGamePlayerInput();
 void handleAIActions();
 void drawGameScreen();
-void proceedSnap(Player *snappedPlayer, Player *otherPlayer, boolean cardMatched) ;
+void proceedSnap(Player *snappedPlayer, Player *otherPlayer, bool cardMatched) ;
 Player* getNextPlayer();
 
 
 extern const Card *cardPool[];
 extern byte cardPoolSize;
-extern boolean gameOver;
-extern boolean cardMatches;
+extern bool gameOver;
+extern bool cardMatches;
 
 #endif

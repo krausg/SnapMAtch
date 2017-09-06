@@ -11,7 +11,7 @@ struct Card {
     byte id;
     Card();
     Card(byte id);
-    boolean matches(Card *);
+    bool matches(Card *);
 };
 
 

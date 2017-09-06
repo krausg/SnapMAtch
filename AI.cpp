@@ -16,11 +16,11 @@ AI::AI(byte inDifficulty, byte playerNum) : Player(playerNum) {
 }
 
 
-boolean AI::hasPressedPlayCard() {
+bool AI::hasPressedPlayCard() {
   return evaluateDelay(&playDelay);
 }
 
-boolean AI::hasPressedSnapCard() {
+bool AI::hasPressedSnapCard() {
   DEBUG_PRINTLN("AI method used");
   switch (difficulty) {
     case EASY_AI:

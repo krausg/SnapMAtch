@@ -11,9 +11,9 @@ class Player {
     Player(byte inPlayerNum);
     Player();
     const Card * playCard();
-    virtual boolean hasPressedPlayCard();
-    virtual boolean hasPressedSnapCard();
-    virtual boolean hasPressedOptions();
+    virtual bool hasPressedPlayCard();
+    virtual bool hasPressedSnapCard();
+    virtual bool hasPressedOptions();
     void setButtonLayout(byte playButton, byte snapButton, byte optionButton);
     const Card* getCurrentCard();
     void addCard(Card* cards);

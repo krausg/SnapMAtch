@@ -9,7 +9,7 @@ Card::Card(byte inId) {
   id = inId;
 }
 
-boolean Card::matches(Card *card) {
+bool Card::matches(Card *card) {
   return this->id == card->id;
 }
 

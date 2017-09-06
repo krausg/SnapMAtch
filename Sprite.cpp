@@ -22,7 +22,7 @@ void Sprite::setVisibleAmount(int8_t inVisibleAmount) {
   visibleAmount = inVisibleAmount;
 }
 
-boolean  Sprite::isVisible() {
+bool  Sprite::isVisible() {
   return visibleAmount != 0;
 }
 

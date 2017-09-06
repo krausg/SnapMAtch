@@ -12,7 +12,7 @@ struct Sprite {
     Sprite(int8_t x, int8_t y, const unsigned char *bitmap);
     void moveTo(int8_t x, int8_t y);
     void setVisibleAmount(int8_t inVisibleAmount);
-    boolean isVisible();
+    bool isVisible();
     void nextFrame();
     int8_t visibleAmount;
     int8_t x, y, frame;

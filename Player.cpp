@@ -73,19 +73,19 @@ const Card* Player::getCurrentCard() {
   return deck[decksize - 1];
 }
 
-boolean Player::hasPressedPlayCard() {
+bool Player::hasPressedPlayCard() {
   
   return arduboy.justPressed(playButton);
 }
 
-boolean Player::hasPressedSnapCard() {
+bool Player::hasPressedSnapCard() {
   if(arduboy.everyXFrames(45)){
     DEBUG_PRINTLN("Player method used");
   }
   return arduboy.justPressed(snapButton);
 }
 
-boolean Player::hasPressedOptions() {
+bool Player::hasPressedOptions() {
   return arduboy.justPressed(optionButton);
 }
 

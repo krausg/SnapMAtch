@@ -11,8 +11,8 @@ class AI : public Player {
   public:
     AI(byte playerNum);
     AI(byte difficulty,byte playerNum);
-    boolean hasPressedPlayCard();
-    boolean hasPressedSnapCard();
+    bool hasPressedPlayCard();
+    bool hasPressedSnapCard();
   private:
     uint8_t difficulty;
     uint8_t playDelay;

@@ -9,14 +9,14 @@
 // change to dynamic var
 #define SINGLEPLAYER true
 
-Player playerOne;
-Player playerTwo;
-Player *playersTurn = &playerOne;
+Player* playerOne;
+Player* playerTwo;
+Player *playersTurn = playerOne;
 
 const Card* cardPool[MAX_CARD_POOL_SIZE];
 byte cardPoolSize = 0;
-boolean gameOver = false;
-boolean cardMatches = false;
+bool gameOver = false;
+bool cardMatches = false;
 
 Sprite gameScreen(0, 0 , gameTest_screen);
 Sprite snapBGSprite(0, 0, snapBG_spriteArr);
@@ -28,9 +28,9 @@ void stateGameIntro() {
 }
 
 void stateGamePlay() {
-  gameOver = (playerOne.decksize <= 0 || playerTwo.decksize <= 0) && cardPoolSize == 0;
+  gameOver = (playerOne->decksize <= 0 || playerTwo->decksize <= 0) && cardPoolSize == 0;
   if (!gameOver) {
-    if (!playerTwo.human) {
+    if (!playerTwo->human) {
       handleAIActions();
     }
 
@@ -62,21 +62,21 @@ void stateGamePrepare() {
   snapTXSprite.setVisibleAmount(SPRITE_NOT_VISIBLE);
   DEBUG_PRINTLN(snapBGSprite.isVisible());
 
-  playerOne = Player(PLAYER_ONE);
+  *playerOne = Player(PLAYER_ONE);
   if (SINGLEPLAYER) {
     DEBUG_PRINTLN("AI STARTED")
-    playerTwo = AI(NORMAL_AI, PLAYER_TWO);
-    playerOne.setButtonLayout(A_BUTTON, B_BUTTON, DOWN_BUTTON);
+    *playerTwo = AI(NORMAL_AI, PLAYER_TWO);
+    playerOne->setButtonLayout(A_BUTTON, B_BUTTON, DOWN_BUTTON);
 
   } else {
     DEBUG_PRINTLN("PLAYER2 STARTED")
-    playerTwo = Player(PLAYER_TWO);
-    playerTwo.setButtonLayout(B_BUTTON,A_BUTTON , NULL);
-    playerOne.setButtonLayout(LEFT_BUTTON,RIGHT_BUTTON,DOWN_BUTTON);
+    *playerTwo = Player(PLAYER_TWO);
+    playerTwo->setButtonLayout(B_BUTTON,A_BUTTON , NULL);
+    playerOne->setButtonLayout(LEFT_BUTTON,RIGHT_BUTTON,DOWN_BUTTON);
   }
 
   DEBUG_PRINT("playerOne deck index 0 test:");
-  DEBUG_PRINTLN(playerOne.deck[0]->id);
+  DEBUG_PRINTLN(playerOne->deck[0]->id);
   DEBUG_PRINTLN("finish Prepare for Game");
 }
 
@@ -98,9 +98,9 @@ void handleGamePlayerInput() {
     DEBUG_PRINTLN(playersTurn->playerNum);
   }
 
-  boolean cardMatches = cardPoolSize != 0 && cardPoolSize != 1 && cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
-  if (playerOne.hasPressedSnapCard()) {
-    proceedSnap(&playerOne, &playerTwo, cardMatches);
+  bool cardMatches = cardPoolSize != 0 && cardPoolSize != 1 && cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
+  if (playerOne->hasPressedSnapCard()) {
+    proceedSnap(playerOne, playerTwo, cardMatches);
     snapBGSprite.moveTo(0, 25);
     snapTXSprite.moveTo(5, 31);
     snapBGSprite.setVisibleAmount(30);
@@ -115,7 +115,7 @@ void handleGamePlayerInput() {
      snapTXSprite.setVisibleAmount(30);
     }*/
 
-  if (playerOne.hasPressedOptions() || playerTwo.hasPressedOptions()) {
+  if (playerOne->hasPressedOptions() || playerTwo->hasPressedOptions()) {
     gameState = STATE_GAME_TITLE;
   }
 }
@@ -129,7 +129,7 @@ void handleAIActions() {
     }
 
 
-    boolean cardMatches = cardPoolSize != 0 && cardPoolSize != 1 && cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
+    bool cardMatches = cardPoolSize != 0 && cardPoolSize != 1 && cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
     cardMatches = playerOne.decksize <= 0 || playerTwo.decksize <= 0 ? true : cardMatches;
     if (ai.hasSnapped(cardMatches)) {
      proceedSnap(&playerTwo, &playerOne, cardMatches);
@@ -142,7 +142,7 @@ void handleAIActions() {
   */
 }
 
-void proceedSnap(Player *snappedPlayer, Player *otherPlayer, boolean cardMatched) {
+void proceedSnap(Player *snappedPlayer, Player *otherPlayer, bool cardMatched) {
  /* DEBUG_PRINT("poolSize: ");
   DEBUG_PRINT(cardPoolSize)
   DEBUG_PRINT(" snappedPlayer::")
@@ -168,16 +168,16 @@ void drawGameScreen() {
 
   // mostly debug
   tinyfont.setCursor(4, 3);
-  tinyfont.print(playerOne.decksize);
+  tinyfont.print(playerOne->decksize);
   tinyfont.setCursor(109, 3);
-  tinyfont.print(playerTwo.decksize);
-  if (playerOne.decksize > 0) {
+  tinyfont.print(playerTwo->decksize);
+  if (playerOne->decksize > 0) {
     tinyfont.setCursor(10, 30);
-    tinyfont.print(playerOne.getCurrentCard()->id);
+    tinyfont.print(playerOne->getCurrentCard()->id);
   }
-  if (playerTwo.decksize > 0) {
+  if (playerTwo->decksize > 0) {
     tinyfont.setCursor(95, 30);
-    tinyfont.print(playerTwo.getCurrentCard()->id);
+    tinyfont.print(playerTwo->getCurrentCard()->id);
   }
   if (cardPoolSize > 0) {
     tinyfont.setCursor(35, 30);
@@ -195,6 +195,6 @@ void drawGameScreen() {
 }
 
 Player* getNextPlayer() {
-  return playersTurn->playerNum == PLAYER_ONE ? &playerTwo : &playerOne;
+  return playersTurn->playerNum == PLAYER_ONE ? playerTwo : playerOne;
 }
 
