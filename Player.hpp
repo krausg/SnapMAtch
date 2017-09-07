@@ -10,7 +10,7 @@ class Player {
   public:
     Player(byte inPlayerNum);
     Player();
-    const Card * playCard();
+    const Card* playCard();
     virtual bool hasPressedPlayCard();
     virtual bool hasPressedSnapCard();
     virtual bool hasPressedOptions();

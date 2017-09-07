@@ -6,7 +6,7 @@ Player::Player(byte inPlayerNum) {
 }
 
 Player::Player() {
-  //DEBUG_PRINTLN("start deck init");
+  DEBUG_PRINTLN("start deck init");
   human = true;
   playButton = A_BUTTON;
   snapButton = B_BUTTON;
@@ -15,13 +15,13 @@ Player::Player() {
   decksize = DEFAULT_DECK_SIZE;
   createNewDeck(deck);
   
-  //DEBUG_PRINTLN("deck content: ");
-  //for (int i = 0; i < decksize; i++) {
-  //DEBUG_PRINT("index[");
-  //DEBUG_PRINT(i);
-  //DEBUG_PRINT("]:");
-  //DEBUG_PRINTLN(deck[i]->id);
-  //}
+  DEBUG_PRINTLN("deck content: ");
+  for (int i = 0; i < decksize; i++) {
+  DEBUG_PRINT("index[");
+  DEBUG_PRINT(i);
+  DEBUG_PRINT("]:");
+  DEBUG_PRINTLN(deck[i]->id);
+  }
 }
 
 
