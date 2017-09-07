@@ -11,7 +11,7 @@
 
 Player* playerOne;
 Player* playerTwo;
-Player *playersTurn = playerOne;
+Player* playersTurn;
 
 const Card* cardPool[MAX_CARD_POOL_SIZE];
 byte cardPoolSize = 0;
@@ -27,31 +27,6 @@ void stateGameIntro() {
   gameState = STATE_GAME_TITLE;
 }
 
-void stateGamePlay() {
-  gameOver = (playerOne->decksize <= 0 || playerTwo->decksize <= 0) && cardPoolSize == 0;
-  if (!gameOver) {
-    if (!playerTwo->human) {
-      handleAIActions();
-    }
-
-    handleGamePlayerInput();
-  }
-
-  drawGameScreen();
-  if (gameOver) {
-    tinyfont.setCursor(50, 30);
-    tinyfont.print("GAME OVER");
-    //tinyfont.print(( playerOne.decksize > 0 ? "Player 2 won!" : "Player 1 won!"));
-    if (arduboy.justPressed(UP_BUTTON)) {
-      DEBUG_PRINT("cardpoolsize:");
-      DEBUG_PRINTLN(cardPoolSize);
-    }
-  }
-  arduboy.display();
-
-
-}
-
 void stateGamePrepare() {
   DEBUG_PRINTLN("start Prepare for Game");
   gameState = STATE_GAME_PLAY;
@@ -62,22 +37,64 @@ void stateGamePrepare() {
   snapTXSprite.setVisibleAmount(SPRITE_NOT_VISIBLE);
   DEBUG_PRINTLN(snapBGSprite.isVisible());
 
-  *playerOne = Player(PLAYER_ONE);
+  playerOne = new Player(PLAYER_ONE);
+  playersTurn = playerOne;
   if (SINGLEPLAYER) {
     DEBUG_PRINTLN("AI STARTED")
-    *playerTwo = AI(NORMAL_AI, PLAYER_TWO);
+    playerTwo = new AI(NORMAL_AI, PLAYER_TWO);
     playerOne->setButtonLayout(A_BUTTON, B_BUTTON, DOWN_BUTTON);
 
   } else {
     DEBUG_PRINTLN("PLAYER2 STARTED")
-    *playerTwo = Player(PLAYER_TWO);
-    playerTwo->setButtonLayout(B_BUTTON,A_BUTTON , NULL);
-    playerOne->setButtonLayout(LEFT_BUTTON,RIGHT_BUTTON,DOWN_BUTTON);
+    playerTwo = new Player(PLAYER_TWO);
+    playerTwo->setButtonLayout(B_BUTTON, A_BUTTON , NULL);
+    playerOne->setButtonLayout(LEFT_BUTTON, RIGHT_BUTTON, DOWN_BUTTON);
   }
 
   DEBUG_PRINT("playerOne deck index 0 test:");
   DEBUG_PRINTLN(playerOne->deck[0]->id);
+
+  DEBUG_PRINTLN("playerOne deck content: ");
+  for (int i = 0; i < playerOne->decksize; i++) {
+    DEBUG_PRINT("index[");
+    DEBUG_PRINT(i);
+    DEBUG_PRINT("]:");
+    DEBUG_PRINTLN(playerOne->deck[i]->id);
+  }
+
   DEBUG_PRINTLN("finish Prepare for Game");
+}
+
+void stateGamePlay() {
+  gameOver = (playerOne->decksize <= 0 || playerTwo->decksize <= 0) && cardPoolSize == 0;
+  //  if (arduboy.everyXFrames(30)) {
+  //    DEBUG_PRINT("gameOver?")
+  //    DEBUG_PRINTLN(gameOver ? "yes" : "no");
+  //    DEBUG_PRINT("decksizeofplayerOne:");
+  //    DEBUG_PRINTLN(playerOne->decksize);
+  //  }
+
+
+  /* if (!gameOver) {
+     if (!playerTwo->human) {
+       handleAIActions();
+     }
+     handleGamePlayerInput();
+    }
+
+    drawGameScreen();
+    if (gameOver) {
+     tinyfont.setCursor(50, 30);
+     tinyfont.print("GAME OVER");
+     //tinyfont.print(( playerOne->decksize > 0 ? "Player 2 won!" : "Player 1 won!"));
+     if (arduboy.justPressed(UP_BUTTON)) {
+       DEBUG_PRINT("cardpoolsize:");
+       DEBUG_PRINTLN(cardPoolSize);
+     }
+    }
+    arduboy.display();
+  */
+
 }
 
 void stateGameInfo() {
@@ -107,13 +124,13 @@ void handleGamePlayerInput() {
     snapTXSprite.setVisibleAmount(30);
   }
 
-  /* if (playerTwo.hasPressedSnapCard()) {
-     proceedSnap(&playerTwo, &playerOne, cardMatches);
-     snapBGSprite.moveTo(91, 25);
-     snapTXSprite.moveTo(96, 31);
-     snapBGSprite.setVisibleAmount(30);
-     snapTXSprite.setVisibleAmount(30);
-    }*/
+  //   if (playerTwo.hasPressedSnapCard()) {
+  //     proceedSnap(&playerTwo, playerOne, cardMatches);
+  //     snapBGSprite.moveTo(91, 25);
+  //     snapTXSprite.moveTo(96, 31);
+  //     snapBGSprite.setVisibleAmount(30);
+  //     snapTXSprite.setVisibleAmount(30);
+  //    }
 
   if (playerOne->hasPressedOptions() || playerTwo->hasPressedOptions()) {
     gameState = STATE_GAME_TITLE;
@@ -124,15 +141,15 @@ void handleAIActions() {
   /* if (playersTurn->playerNum == PLAYER_TWO) {
      if (ai.hasPlayedCard()) {
        cardPool[cardPoolSize++] = playerTwo.playCard();
-       playersTurn = &playerOne;
+       playersTurn = playerOne;
      }
     }
 
 
     bool cardMatches = cardPoolSize != 0 && cardPoolSize != 1 && cardPool[cardPoolSize - 1]->matches(cardPool[cardPoolSize - 2]);
-    cardMatches = playerOne.decksize <= 0 || playerTwo.decksize <= 0 ? true : cardMatches;
+    cardMatches = playerOne->decksize <= 0 || playerTwo.decksize <= 0 ? true : cardMatches;
     if (ai.hasSnapped(cardMatches)) {
-     proceedSnap(&playerTwo, &playerOne, cardMatches);
+     proceedSnap(&playerTwo, playerOne, cardMatches);
      snapBGSprite.moveTo(91, 25);
      snapTXSprite.moveTo(96, 31);
      snapBGSprite.setVisibleAmount(30);
@@ -143,16 +160,16 @@ void handleAIActions() {
 }
 
 void proceedSnap(Player *snappedPlayer, Player *otherPlayer, bool cardMatched) {
- /* DEBUG_PRINT("poolSize: ");
-  DEBUG_PRINT(cardPoolSize)
-  DEBUG_PRINT(" snappedPlayer::")
-  DEBUG_PRINTLN(snappedPlayer->human)
-*/
+  /* DEBUG_PRINT("poolSize: ");
+    DEBUG_PRINT(cardPoolSize)
+    DEBUG_PRINT(" snappedPlayer::")
+    DEBUG_PRINTLN(snappedPlayer->human)
+  */
 
   Player *playerGetCards = cardMatched ? snappedPlayer : otherPlayer;
   for (int i = cardPoolSize - 1; i >= 0; i--) {
-   // DEBUG_PRINT("card snapped was:")
-   // DEBUG_PRINTLN(cardPool[i]->id)
+    // DEBUG_PRINT("card snapped was:")
+    // DEBUG_PRINTLN(cardPool[i]->id)
     playerGetCards->addCard(cardPool[i]);
     cardPool[i] = NULL;
   }
