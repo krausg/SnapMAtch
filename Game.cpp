@@ -75,25 +75,26 @@ void stateGamePlay() {
   //  }
 
 
-  /* if (!gameOver) {
-     if (!playerTwo->human) {
-       handleAIActions();
-     }
-     handleGamePlayerInput();
+  if (!gameOver) {
+    if (!playerTwo->human) {
+      handleAIActions();
     }
+    handleGamePlayerInput();
+  }
 
-    drawGameScreen();
-    if (gameOver) {
-     tinyfont.setCursor(50, 30);
-     tinyfont.print("GAME OVER");
-     //tinyfont.print(( playerOne->decksize > 0 ? "Player 2 won!" : "Player 1 won!"));
-     if (arduboy.justPressed(UP_BUTTON)) {
-       DEBUG_PRINT("cardpoolsize:");
-       DEBUG_PRINTLN(cardPoolSize);
-     }
+  drawGameScreen();
+  if (gameOver) {
+    tinyfont.setCursor(40, 30);
+    tinyfont.print("GAME OVER");
+    tinyfont.setCursor(40, 35);
+    tinyfont.print(( playerOne->decksize > 0 ? "Player 1 won!" : "Player 2 won!"));
+    if (arduboy.justPressed(UP_BUTTON)) {
+      DEBUG_PRINT("cardpoolsize:");
+      DEBUG_PRINTLN(cardPoolSize);
     }
-    arduboy.display();
-  */
+  }
+  arduboy.display();
+
 
 }
 
@@ -124,13 +125,13 @@ void handleGamePlayerInput() {
     snapTXSprite.setVisibleAmount(30);
   }
 
-  //   if (playerTwo.hasPressedSnapCard()) {
-  //     proceedSnap(&playerTwo, playerOne, cardMatches);
-  //     snapBGSprite.moveTo(91, 25);
-  //     snapTXSprite.moveTo(96, 31);
-  //     snapBGSprite.setVisibleAmount(30);
-  //     snapTXSprite.setVisibleAmount(30);
-  //    }
+  if (playerTwo->hasPressedSnapCard()) {
+    proceedSnap(playerTwo, playerOne, cardMatches);
+    snapBGSprite.moveTo(91, 25);
+    snapTXSprite.moveTo(96, 31);
+    snapBGSprite.setVisibleAmount(30);
+    snapTXSprite.setVisibleAmount(30);
+  }
 
   if (playerOne->hasPressedOptions() || playerTwo->hasPressedOptions()) {
     gameState = STATE_GAME_TITLE;

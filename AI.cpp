@@ -3,12 +3,9 @@
 #include <stdint.h>
 #include "Game.hpp"
 
-AI::AI(byte playerNum) : Player(playerNum) {
-  AI(EASY_AI, playerNum);
-}
+AI::AI(byte playerNum) : AI(EASY_AI, playerNum) { }
 
 AI::AI(byte inDifficulty, byte playerNum) : Player(playerNum) {
-  DEBUG_PRINTLN("AI CTOR");
   difficulty = inDifficulty;
   playDelay = 1 * difficulty;
   snapDelay = 1 * difficulty;
@@ -21,16 +18,24 @@ bool AI::hasPressedPlayCard() {
 }
 
 bool AI::hasPressedSnapCard() {
-  DEBUG_PRINTLN("AI method used");
   switch (difficulty) {
-    case EASY_AI:
-      return evaluateDelay((snapDelay * 15));
+    case EASY_AI: {
+        int aaa = random(1, 20);
+        if (aaa == 1)  {
+          return true;
+        } else {
+          return cardMatches && evaluateDelay(&snapDelay);
+        }
+      }
     case NORMAL_AI:
     case DIFFICULT_AI:
-    default:
-      if (cardMatches) {
-        return evaluateDelay(&snapDelay);
+    default: {
+        bool tt = cardMatches && evaluateDelay(&snapDelay);
+        DEBUG_PRINT("DEBUG RANDOM: ");
+        DEBUG_PRINTLN(tt);
+        return tt;
       }
+
   }
 }
 
