@@ -24,7 +24,7 @@ Player::Player() {
 
 
 const Card* Player::playCard() {
-  DEBUG_PRINT(human == 0 ? "cpu [" : "human [");
+  /*DEBUG_PRINT(human == 0 ? "cpu [" : "human [");
   DEBUG_PRINT(playerNum);
   DEBUG_PRINT("] with decksize: ");
   DEBUG_PRINT(decksize);
@@ -34,15 +34,11 @@ const Card* Player::playCard() {
     if (i > 0) {
       DEBUG_PRINT(",");
     }
-    /*  if ((DEFAULT_DECK_SIZE - decksize) - i == 0) {
-        DEBUG_PRINT("[");
-      }*/
+  
     DEBUG_PRINT(deck[i]->id);
-    /*if ((DEFAULT_DECK_SIZE - decksize) - i == 0) {
-      DEBUG_PRINT("]");
-      }*/
+  
   }
-  DEBUG_PRINTLN(")");
+  DEBUG_PRINTLN(")");*/
 
   const Card *c = getCurrentCard();
   decksize--;
