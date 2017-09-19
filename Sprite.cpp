@@ -4,7 +4,7 @@ Sprite::Sprite(int8_t inX, int8_t inY, const  unsigned char *inBitMap) {
   x = inX;
   y = inY;
   bitmap  = inBitMap;
-  visibleAmount = -1;
+  visibleAmount = SPRITE_ALWAYS_VISIBLE;
 }
 
 void Sprite::moveTo(int8_t moveX, int8_t moveY) {

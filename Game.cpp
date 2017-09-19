@@ -7,7 +7,7 @@
 #define PLAYER_TWO 2
 
 // change to dynamic var
-#define SINGLEPLAYER true
+#define SINGLEPLAYER false
 
 Player* playerOne;
 Player* playerTwo;

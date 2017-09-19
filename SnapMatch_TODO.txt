@@ -1,0 +1,5 @@
+TODO: snapMatch
+
+* 3 card arrays to 1 (only save flags of the player)
+* convert most sprites into vector
+* split card data of paint card (by new class or something) 
